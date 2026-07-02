@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Nota de Pescado</title>
+<style>
+  :root{
+    --azul:#0b3d62;
+    --azul-claro:#1f6f8b;
+    --bg:#f3f7f9;
+    --linha:#dbe6ea;
+    --card-bg:#ffffff;
+    --texto:#1a2b33;
+    --texto-suave:#5b7480;
+  }
+  body.dark{
+    --azul:#4fb3d9;
+    --azul-claro:#3a8aab;
+    --bg:#121821;
+    --linha:#2a3a45;
+    --card-bg:#1c2733;
+    --texto:#e8eef2;
+    --texto-suave:#9aaab3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:var(--bg);
+    margin:0;
+    padding:20px;
+    color:var(--texto);
+    transition: background 0.2s, color 0.2s;
+  }
+  .container{
+    max-width:720px;
+    margin:0 auto;
+  }
+  .topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  h1{
+    color:var(--azul);
+    font-size:22px;
+    margin-bottom:4px;
+  }
+  .sub{
+    color:var(--texto-suave);
+    font-size:13px;
+    margin-bottom:20px;
+  }
+  .btn-tema{
+    background:var(--card-bg);
+    border:1px solid var(--linha);
+    color:var(--texto);
+    border-radius:20px;
+    padding:8px 14px;
+    font-size:13px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .card{
+    background:var(--card-bg);
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:16px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.15);
+    transition: background 0.2s;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--azul);
+    margin-bottom:4px;
+  }
+  input{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--linha);
+    border-radius:6px;
+    font-size:14px;
+    margin-bottom:10px;
+    background:var(--bg);
+    color:var(--texto);
+  }
+  .grid-cliente{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 12px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  th{
+    text-align:left;
+    color:var(--azul);
+    font-size:12px;
+    padding:4px 6px;
+    border-bottom:2px solid var(--linha);
+  }
+  td{
+    padding:4px 6px;
+    border-bottom:1px solid var(--linha);
+    color:var(--texto);
+  }
+  td input{
+    margin-bottom:0;
+    padding:6px 8px;
+  }
+  .col-acao{
+    width:34px;
+    text-align:center;
+  }
+  .btn{
+    cursor:pointer;
+    border:none;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 14px;
+  }
+  .btn-add{
+    background:var(--azul-claro);
+    color:#fff;
+    margin-top:10px;
+  }
+  .btn-remover{
+    background:#e74c3c;
+    color:#fff;
+    border-radius:50%;
+    width:26px;
+    height:26px;
+    line-height:1;
+    padding:0;
+  }
+  .btn-gerar{
+    background:var(--azul);
+    color:#fff;
+    width:100%;
+    padding:14px;
+    font-size:15px;
+    margin-top:6px;
+  }
+  .total-box{
+    text-align:right;
+    font-size:16px;
+    font-weight:700;
+    color:var(--azul);
+    margin-top:12px;
+  }
+  #preview-wrap{
+    text-align:center;
+  }
+  #preview-wrap img{
+    max-width:100%;
+    border:1px solid var(--linha);
+    border-radius:8px;
+    margin-top:10px;
+  }
+  .preview-titulo{
+    font-weight:700;
+    color:var(--azul);
+    font-size:15px;
+    margin-bottom:8px;
+  }
+  .preview-dica{
+    font-size:12px;
+    color:var(--texto-suave);
+    margin-top:6px;
+  }
+  .btn-download{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    background:#27ae60;
+    color:#fff;
+    border:none;
+    padding:13px 24px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(39,174,96,0.35);
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-download:hover{ background:#219150; transform:translateY(-1px); }
+  .btn-download:active{ transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topo">
+    <div>
+      <h1>🐟 Nota de Prestação de Contas</h1>
+      <div class="sub">Sistema offline para registro de venda de pescados</div>
+    </div>
+    <button class="btn-tema" id="btn-tema" onclick="alternarTema()">🌙 Modo Escuro</button>
+  </div>
+
+  <div class="card">
+    <div class="grid-cliente">
+      <div>
+        <label>Nome do Cliente</label>
+        <input id="cliente" placeholder="Ex: João da Silva">
+      </div>
+      <div>
+        <label>Data</label>
+        <input id="data" type="date">
+      </div>
+    </div>
+    <label>Observações (opcional)</label>
+    <input id="obs" placeholder="Ex: Pagamento via Pix">
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Tipo de Pescado</th>
+          <th>Preço/kg (R$)</th>
+          <th>Peso (kg)</th>
+          <th>Subtotal (R$)</th>
+          <th class="col-acao"></th>
+        </tr>
+      </thead>
+      <tbody id="tabela-itens"></tbody>
+    </table>
+    <button class="btn btn-add" onclick="adicionarLinha()">+ Adicionar Pescado</button>
+
+    <div class="grid-cliente" style="margin-top:14px;">
+      <div>
+        <label>Desconto Pix (R$)</label>
+        <input id="desconto-pix" type="number" step="0.01" value="620" oninput="calcularTotalGeral()">
+      </div>
+      <div>
+        <label>Desconto Trabalhador (R$)</label>
+        <input id="desconto-trabalhador" type="number" step="0.01" value="80" oninput="calcularTotalGeral()">
+      </div>
+    </div>
+
+    <div class="total-box">Subtotal: R$ <span id="total-geral">0,00</span></div>
+    <div class="total-box" style="color:#c0392b; font-size:14px;">Comissão (5%): - R$ <span id="comissao-valor">0,00</span></div>
+    <div class="total-box" style="color:#c0392b; font-size:14px;">Desconto Pix: - R$ <span id="desconto-pix-valor">0,00</span></div>
+    <div class="total-box" style="color:#c0392b; font-size:14px;">Desconto Trabalhador: - R$ <span id="desconto-trab-valor">0,00</span></div>
+    <div class="total-box" style="font-size:18px; border-top:2px solid var(--linha); padding-top:8px;">Total Líquido: R$ <span id="total-liquido">0,00</span></div>
+  </div>
+
+  <button class="btn btn-gerar" onclick="gerarNota()">📄 Gerar Nota (JPEG)</button>
+
+  <div class="card" id="preview-wrap" style="display:none;">
+    <div id="preview-wrap-inner"></div>
+  </div>
+</div>
+
+<script>
+let contador = 0;
+
+function adicionarLinha(){
+  contador++;
+  const tbody = document.getElementById('tabela-itens');
+  const tr = document.createElement('tr');
+  tr.id = 'linha-' + contador;
+  tr.innerHTML = `
+    <td><input type="text" class="tipo" placeholder="Ex: Tilápia"></td>
+    <td><input type="number" class="preco" placeholder="0,00" step="0.01" oninput="calcularSubtotal('${contador}')"></td>
+    <td><input type="number" class="peso" placeholder="0,00" step="0.01" oninput="calcularSubtotal('${contador}')"></td>
+    <td><span class="subtotal">0,00</span></td>
+    <td class="col-acao"><button class="btn btn-remover" onclick="removerLinha('${contador}')">×</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function removerLinha(id){
+  const linha = document.getElementById('linha-' + id);
+  if(linha){ linha.remove(); calcularTotalGeral(); }
+}
+
+function calcularSubtotal(id){
+  const linha = document.getElementById('linha-' + id);
+  const preco = parseFloat(linha.querySelector('.preco').value) || 0;
+  const peso = parseFloat(linha.querySelector('.peso').value) || 0;
+  const subtotal = preco * peso;
+  linha.querySelector('.subtotal').textContent = subtotal.toFixed(2).replace('.', ',');
+  calcularTotalGeral();
+}
+
+function calcularTotalGeral(){
+  const subtotais = document.querySelectorAll('.subtotal');
+  let total = 0;
+  subtotais.forEach(s => {
+    total += parseFloat(s.textContent.replace(',', '.')) || 0;
+  });
+  document.getElementById('total-geral').textContent = total.toFixed(2).replace('.', ',');
+  calcularComissao(total);
+}
+
+const TAXA_COMISSAO = 0.05; // 5%
+
+function calcularComissao(totalBruto){
+  const comissao = totalBruto * TAXA_COMISSAO;
+  const descontoPix = parseFloat(document.getElementById('desconto-pix').value) || 0;
+  const descontoTrabalhador = parseFloat(document.getElementById('desconto-trabalhador').value) || 0;
+  const liquido = totalBruto - comissao - descontoPix - descontoTrabalhador;
+
+  document.getElementById('comissao-valor').textContent = comissao.toFixed(2).replace('.', ',');
+  document.getElementById('desconto-pix-valor').textContent = descontoPix.toFixed(2).replace('.', ',');
+  document.getElementById('desconto-trab-valor').textContent = descontoTrabalhador.toFixed(2).replace('.', ',');
+  document.getElementById('total-liquido').textContent = liquido.toFixed(2).replace('.', ',');
+
+  return { comissao, descontoPix, descontoTrabalhador, liquido };
+}
+
+function formatarMoeda(v){
+  return 'R$ ' + v.toFixed(2).replace('.', ',');
+}
+
+function formatarData(iso){
+  if(!iso) {
+    const hoje = new Date();
+    return hoje.toLocaleDateString('pt-BR');
+  }
+  const [ano, mes, dia] = iso.split('-');
+  return `${dia}/${mes}/${ano}`;
+}
+
+function gerarNota(){
+  const cliente = document.getElementById('cliente').value.trim() || 'Não informado';
+  const dataVal = document.getElementById('data').value;
+  const data = formatarData(dataVal);
+  const obs = document.getElementById('obs').value.trim();
+
+  const linhas = document.querySelectorAll('#tabela-itens tr');
+  const itens = [];
+  linhas.forEach(l => {
+    const tipo = l.querySelector('.tipo').value.trim();
+    const preco = parseFloat(l.querySelector('.preco').value) || 0;
+    const peso = parseFloat(l.querySelector('.peso').value) || 0;
+    if(tipo && (preco > 0 || peso > 0)){
+      itens.push({ tipo, preco, peso, subtotal: preco * peso });
+    }
+  });
+
+  if(itens.length === 0){
+    alert('Adicione ao menos um pescado com tipo, preço e peso antes de gerar a nota.');
+    return;
+  }
+
+  const total = itens.reduce((acc, it) => acc + it.subtotal, 0);
+  const comissao = total * TAXA_COMISSAO;
+  const descontoPix = parseFloat(document.getElementById('desconto-pix').value) || 0;
+  const descontoTrabalhador = parseFloat(document.getElementById('desconto-trabalhador').value) || 0;
+  const totalLiquido = total - comissao - descontoPix - descontoTrabalhador;
+
+  // ---- Desenho no canvas ----
+  const largura = 600;
+  const alturaBase = 380;
+  const alturaLinha = 34;
+  const altura = alturaBase + itens.length * alturaLinha + (obs ? 50 : 0);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = largura;
+  canvas.height = altura;
+  const ctx = canvas.getContext('2d');
+
+  // fundo
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, largura, altura);
+
+  // cabeçalho
+  ctx.fillStyle = '#0b3d62';
+  ctx.fillRect(0, 0, largura, 70);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 22px Arial';
+  ctx.fillText('NOTA DE PRESTAÇÃO DE CONTAS', 24, 32);
+  ctx.font = '13px Arial';
+  ctx.fillText('Venda de Pescados', 24, 52);
+
+  // dados cliente
+  let y = 95;
+  ctx.fillStyle = '#1a2b33';
+  ctx.font = 'bold 14px Arial';
+  ctx.fillText('Cliente:', 24, y);
+  ctx.font = '14px Arial';
+  ctx.fillText(cliente, 100, y);
+
+  ctx.font = 'bold 14px Arial';
+  ctx.fillText('Data:', 380, y);
+  ctx.font = '14px Arial';
+  ctx.fillText(data, 425, y);
+
+  y += 25;
+  ctx.strokeStyle = '#dbe6ea';
+  ctx.beginPath();
+  ctx.moveTo(24, y);
+  ctx.lineTo(largura - 24, y);
+  ctx.stroke();
+
+  // cabeçalho tabela
+  y += 25;
+  ctx.font = 'bold 12px Arial';
+  ctx.fillStyle = '#0b3d62';
+  ctx.fillText('PESCADO', 24, y);
+  ctx.fillText('PREÇO/KG', 280, y);
+  ctx.fillText('PESO (KG)', 400, y);
+  ctx.fillText('SUBTOTAL', 500, y);
+
+  y += 10;
+  ctx.strokeStyle = '#0b3d62';
+  ctx.beginPath();
+  ctx.moveTo(24, y);
+  ctx.lineTo(largura - 24, y);
+  ctx.stroke();
+
+  // itens
+  ctx.font = '13px Arial';
+  itens.forEach((it, i) => {
+    y += alturaLinha;
+    ctx.fillStyle = '#1a2b33';
+    ctx.fillText(it.tipo, 24, y);
+    ctx.fillText(formatarMoeda(it.preco), 280, y);
+    ctx.fillText(it.peso.toFixed(2).replace('.', ',') + ' kg', 400, y);
+    ctx.fillText(formatarMoeda(it.subtotal), 500, y);
+
+    ctx.strokeStyle = '#f0f0f0';
+    ctx.beginPath();
+    ctx.moveTo(24, y + 10);
+    ctx.lineTo(largura - 24, y + 10);
+    ctx.stroke();
+  });
+
+  // subtotal bruto
+  y += 30;
+  ctx.strokeStyle = '#0b3d62';
+  ctx.beginPath();
+  ctx.moveTo(24, y - 25);
+  ctx.lineTo(largura - 24, y - 25);
+  ctx.stroke();
+
+  ctx.font = '14px Arial';
+  ctx.fillStyle = '#1a2b33';
+  ctx.fillText('Subtotal:', 320, y);
+  ctx.fillText(formatarMoeda(total), 480, y);
+
+  // comissão
+  y += 26;
+  ctx.fillStyle = '#c0392b';
+  ctx.fillText('Comissão (5%):', 320, y);
+  ctx.fillText('- ' + formatarMoeda(comissao), 480, y);
+
+  // desconto pix
+  y += 24;
+  ctx.fillText('Desconto Pix:', 320, y);
+  ctx.fillText('- ' + formatarMoeda(descontoPix), 480, y);
+
+  // desconto trabalhador
+  y += 24;
+  ctx.fillText('Desconto Trabalhador:', 320, y);
+  ctx.fillText('- ' + formatarMoeda(descontoTrabalhador), 480, y);
+
+  // total líquido
+  y += 32;
+  ctx.font = 'bold 18px Arial';
+  ctx.fillStyle = '#0b3d62';
+  ctx.fillText('TOTAL LÍQUIDO: ' + formatarMoeda(totalLiquido), 250, y);
+
+  // observações
+  if(obs){
+    y += 35;
+    ctx.font = 'italic 12px Arial';
+    ctx.fillStyle = '#5b7480';
+    ctx.fillText('Obs: ' + obs, 24, y);
+  }
+
+  // rodapé
+  ctx.font = '10px Arial';
+  ctx.fillStyle = '#9aa9af';
+  ctx.fillText('Documento gerado offline — sem validade fiscal', 24, altura - 12);
+
+  // ---- exibir e permitir download ----
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+  // converte dataURL em Blob para download confiável em file://
+  function dataUrlParaBlob(dataUrl){
+    const [header, base64] = dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)[1];
+    const binStr = atob(base64);
+    const arr = new Uint8Array(binStr.length);
+    for(let i = 0; i < binStr.length; i++) arr[i] = binStr.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  }
+
+  const blob = dataUrlParaBlob(dataUrl);
+  const blobUrl = URL.createObjectURL(blob);
+  const nomeArquivo = `nota_${cliente.replace(/\s+/g,'_')}_${dataVal || 'hoje'}.jpg`;
+
+  const wrap = document.getElementById('preview-wrap');
+  const inner = document.getElementById('preview-wrap-inner');
+  wrap.style.display = 'block';
+
+  inner.innerHTML = `
+    <div class="preview-titulo">✅ Nota gerada com sucesso!</div>
+    <img src="${dataUrl}" alt="Nota gerada" id="img-nota">
+    <br>
+    <button class="btn-download" id="btn-dl">⬇️ Baixar Nota em JPEG</button>
+    <div class="preview-dica">Clique no botão acima para salvar a imagem no seu dispositivo.</div>
+  `;
+
+  document.getElementById('btn-dl').addEventListener('click', function(){
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = nomeArquivo;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+  });
+
+  wrap.scrollIntoView({behavior:'smooth'});
+}
+
+function alternarTema(){
+  const isDark = document.body.classList.toggle('dark');
+  const btn = document.getElementById('btn-tema');
+  btn.textContent = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+  localStorage.setItem('tema-nota-pescado', isDark ? 'dark' : 'light');
+}
+
+// inicia com uma linha, a data de hoje, e aplica o tema (dark mode por padrão)
+window.onload = function(){
+  document.getElementById('data').valueAsDate = new Date();
+  adicionarLinha();
+  calcularTotalGeral();
+
+  const temaSalvo = localStorage.getItem('tema-nota-pescado');
+  const usarDark = temaSalvo ? temaSalvo === 'dark' : true; // padrão: dark mode
+  if(usarDark){
+    document.body.classList.add('dark');
+    document.getElementById('btn-tema').textContent = '☀️ Modo Claro';
+  }
+};
+</script>
+</body>
+</html>
